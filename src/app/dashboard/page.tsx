@@ -1,6 +1,6 @@
-import { UserButton } from '@clerk/nextjs';
-import { Brain, Map, BookOpen } from 'lucide-react';
-import Link from 'next/link';
+import { UserButton } from "@clerk/nextjs";
+import { Brain, Map, BookOpen } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   return (
@@ -27,9 +27,12 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Generate Content Section */}
         <section className="mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Generate Content</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Generate Content
+          </h1>
           <p className="text-gray-600 text-lg mb-8">
-            Create personalized study roadmaps and quizzes to enhance your learning.
+            Create personalized study roadmaps and quizzes to enhance your
+            learning.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -41,9 +44,11 @@ export default function Dashboard() {
               <p className="text-gray-600 mb-6">
                 A step-by-step study plan with built-in quizzes
               </p>
-              <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
-                Let's Start
-              </button>
+              <Link href="/roadmap/generate">
+                <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+                  Let's Start
+                </button>
+              </Link>
             </div>
 
             {/* Generate Quiz Card */}
@@ -54,18 +59,20 @@ export default function Dashboard() {
               <p className="text-gray-600 mb-6">
                 Test your knowledge with AI-generated quizzes
               </p>
-              <Link href="/roadmap/generate">
-  <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
-    Let's Start
-  </button>
-</Link>
+              <Link href="/quiz/generate">
+                <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+                  Let's Start
+                </button>
+              </Link>
             </div>
           </div>
         </section>
 
         {/* Your Roadmaps Section */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Your Roadmaps</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Your Roadmaps
+          </h2>
           <div className="bg-white rounded-xl border border-gray-200 p-8">
             <div className="text-center text-gray-500 py-8">
               <Map className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -76,7 +83,9 @@ export default function Dashboard() {
 
         {/* Your Quizzes Section */}
         <section>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Your Quizzes</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Your Quizzes
+          </h2>
           <div className="bg-white rounded-xl border border-gray-200 p-8">
             <div className="text-center text-gray-500 py-8">
               <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
