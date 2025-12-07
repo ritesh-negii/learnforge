@@ -1,7 +1,8 @@
-"use client"
+'use client';
 
 import React, { useState } from 'react';
 import { Brain, ArrowLeft, Sparkles, CheckCircle2, Clock } from 'lucide-react';
+import Link from 'next/link';
 
 export default function RoadmapGenerator() {
   const [step, setStep] = useState<'form' | 'generating' | 'result'>('form');
@@ -11,17 +12,19 @@ export default function RoadmapGenerator() {
     duration: '4',
   });
   const [roadmap, setRoadmap] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
 
   const handleSubmit = () => {
     if (!formData.topic) return;
     setStep('generating');
 
-    // Simulate API call
+    // Simulate API call - we'll add real AI later
     setTimeout(() => {
       const mockRoadmap = {
         title: `${formData.topic} Learning Path`,
+        topic: formData.topic,
         difficulty: formData.difficulty,
-        estimatedWeeks: formData.duration,
+        duration: parseInt(formData.duration),
         phases: [
           {
             week: 1,
@@ -32,6 +35,7 @@ export default function RoadmapGenerator() {
               'Setting up your environment',
               'First practical exercise',
             ],
+            completed: false,
           },
           {
             week: 2,
@@ -42,6 +46,7 @@ export default function RoadmapGenerator() {
               'Common patterns and best practices',
               'Quiz: Test your understanding',
             ],
+            completed: false,
           },
           {
             week: 3,
@@ -52,6 +57,7 @@ export default function RoadmapGenerator() {
               'Problem-solving strategies',
               'Project: Build something practical',
             ],
+            completed: false,
           },
           {
             week: 4,
@@ -62,6 +68,7 @@ export default function RoadmapGenerator() {
               'Final project',
               'Assessment and next steps',
             ],
+            completed: false,
           },
         ],
       };
@@ -70,18 +77,41 @@ export default function RoadmapGenerator() {
     }, 3000);
   };
 
+  const handleSaveRoadmap = async () => {
+    setSaving(true);
+    try {
+      const response = await fetch('/api/roadmap', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(roadmap),
+      });
+
+      if (response.ok) {
+        alert('Roadmap saved successfully! ✅');
+      } else {
+        alert('Failed to save roadmap. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error saving roadmap:', error);
+      alert('Failed to save roadmap. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button 
-              onClick={() => window.history.back()}
-              className="p-2 hover:bg-gray-100 rounded-lg transition"
-            >
-              <ArrowLeft className="w-5 h-5 text-gray-600" />
-            </button>
+            <Link href="/dashboard">
+              <button className="p-2 hover:bg-gray-100 rounded-lg transition">
+                <ArrowLeft className="w-5 h-5 text-gray-600" />
+              </button>
+            </Link>
             <div className="flex items-center gap-2">
               <div className="bg-gradient-to-br from-orange-500 to-red-600 p-2 rounded-lg">
                 <Brain className="w-6 h-6 text-white" />
@@ -201,12 +231,16 @@ export default function RoadmapGenerator() {
                     </span>
                     <span className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {roadmap.estimatedWeeks} weeks
+                      {roadmap.duration} weeks
                     </span>
                   </div>
                 </div>
-                <button className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-semibold hover:shadow-lg transition">
-                  Save Roadmap
+                <button 
+                  onClick={handleSaveRoadmap}
+                  disabled={saving}
+                  className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-lg font-semibold hover:shadow-lg transition disabled:opacity-50"
+                >
+                  {saving ? 'Saving...' : 'Save Roadmap'}
                 </button>
               </div>
 
@@ -241,9 +275,11 @@ export default function RoadmapGenerator() {
               >
                 Generate Another
               </button>
-              <button className="flex-1 px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
-                Start Learning
-              </button>
+              <Link href="/dashboard" className="flex-1">
+                <button className="w-full px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+                  Back to Dashboard
+                </button>
+              </Link>
             </div>
           </div>
         )}

@@ -22,13 +22,14 @@ export default function QuizGenerator() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<number[]>([]);
   const [showExplanation, setShowExplanation] = useState(false);
+  const [quizId, setQuizId] = useState<string | null>(null);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!formData.topic) return;
     setStep('generating');
 
     // Simulate API call - we'll add real AI later
-    setTimeout(() => {
+    setTimeout(async () => {
       const mockQuiz: Question[] = Array.from({ length: parseInt(formData.numberOfQuestions) }, (_, i) => ({
         question: `Question ${i + 1} about ${formData.topic}: What is the correct approach?`,
         options: [
@@ -40,8 +41,32 @@ export default function QuizGenerator() {
         correctAnswer: 1,
         explanation: `The correct answer is B because it demonstrates the fundamental principle of ${formData.topic} in this context.`,
       }));
+      
       setQuiz(mockQuiz);
       setSelectedAnswers(new Array(mockQuiz.length).fill(-1));
+
+      // Save quiz to database
+      try {
+        const response = await fetch('/api/quiz', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            topic: formData.topic,
+            difficulty: formData.difficulty,
+            questions: mockQuiz,
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setQuizId(data.quiz._id);
+        }
+      } catch (error) {
+        console.error('Error saving quiz:', error);
+      }
+
       setStep('quiz');
     }, 2000);
   };
@@ -53,21 +78,48 @@ export default function QuizGenerator() {
     setShowExplanation(true);
   };
 
-  const handleNext = () => {
-    if (currentQuestion < quiz.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setShowExplanation(false);
-    } else {
-      setStep('results');
-    }
-  };
-
   const calculateScore = () => {
     let correct = 0;
     selectedAnswers.forEach((answer, index) => {
       if (answer === quiz[index].correctAnswer) correct++;
     });
     return correct;
+  };
+
+  const saveQuizResult = async () => {
+    if (!quizId) return;
+
+    const score = calculateScore();
+    const percentage = Math.round((score / quiz.length) * 100);
+
+    try {
+      await fetch('/api/quiz/result', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizId,
+          topic: formData.topic,
+          score,
+          totalQuestions: quiz.length,
+          percentage,
+          answers: selectedAnswers,
+        }),
+      });
+    } catch (error) {
+      console.error('Error saving quiz result:', error);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentQuestion < quiz.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setShowExplanation(false);
+    } else {
+      saveQuizResult();
+      setStep('results');
+    }
   };
 
   const score = calculateScore();
@@ -335,21 +387,17 @@ export default function QuizGenerator() {
                     setCurrentQuestion(0);
                     setSelectedAnswers([]);
                     setShowExplanation(false);
+                    setQuizId(null);
                   }}
                   className="px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition"
                 >
                   Take Another Quiz
                 </button>
-                <button
-                  onClick={() => {
-                    setCurrentQuestion(0);
-                    setStep('quiz');
-                    setShowExplanation(false);
-                  }}
-                  className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition"
-                >
-                  Review Answers
-                </button>
+                <Link href="/dashboard">
+                  <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+                    Back to Dashboard
+                  </button>
+                </Link>
               </div>
             </div>
           </div>
