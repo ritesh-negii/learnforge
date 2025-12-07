@@ -1,5 +1,6 @@
 import { UserButton } from '@clerk/nextjs';
 import { Brain, Map, BookOpen } from 'lucide-react';
+import Link from 'next/link';
 
 export default function Dashboard() {
   return (
@@ -53,9 +54,11 @@ export default function Dashboard() {
               <p className="text-gray-600 mb-6">
                 Test your knowledge with AI-generated quizzes
               </p>
-              <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
-                Let's Start
-              </button>
+              <Link href="/roadmap/generate">
+  <button className="px-6 py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition">
+    Let's Start
+  </button>
+</Link>
             </div>
           </div>
         </section>
