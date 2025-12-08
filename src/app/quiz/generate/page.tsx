@@ -24,52 +24,57 @@ export default function QuizGenerator() {
   const [showExplanation, setShowExplanation] = useState(false);
   const [quizId, setQuizId] = useState<string | null>(null);
 
-  const handleGenerate = async () => {
-    if (!formData.topic) return;
-    setStep('generating');
+ const handleGenerate = async () => {
+  if (!formData.topic) return;
+  setStep('generating');
 
-    // Simulate API call - we'll add real AI later
-    setTimeout(async () => {
-      const mockQuiz: Question[] = Array.from({ length: parseInt(formData.numberOfQuestions) }, (_, i) => ({
-        question: `Question ${i + 1} about ${formData.topic}: What is the correct approach?`,
-        options: [
-          'This is option A',
-          'This is option B (correct)',
-          'This is option C',
-          'This is option D',
-        ],
-        correctAnswer: 1,
-        explanation: `The correct answer is B because it demonstrates the fundamental principle of ${formData.topic} in this context.`,
-      }));
-      
-      setQuiz(mockQuiz);
-      setSelectedAnswers(new Array(mockQuiz.length).fill(-1));
+  try {
+    // Call AI API to generate quiz
+    const quizResponse = await fetch('/api/generate/quiz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        topic: formData.topic,
+        difficulty: formData.difficulty,
+        numberOfQuestions: formData.numberOfQuestions,
+      }),
+    });
 
-      // Save quiz to database
-      try {
-        const response = await fetch('/api/quiz', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            topic: formData.topic,
-            difficulty: formData.difficulty,
-            questions: mockQuiz,
-          }),
-        });
+    if (!quizResponse.ok) {
+      throw new Error('Failed to generate quiz');
+    }
 
-        if (response.ok) {
-          const data = await response.json();
-          setQuizId(data.quiz._id);
-        }
-      } catch (error) {
-        console.error('Error saving quiz:', error);
-      }
+    const quizData = await quizResponse.json();
+    setQuiz(quizData.questions);
+    setSelectedAnswers(new Array(quizData.questions.length).fill(-1));
 
-      setStep('quiz');
-    }, 2000);
-  };
+    // Save quiz to database
+    const saveResponse = await fetch('/api/quiz', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        topic: formData.topic,
+        difficulty: formData.difficulty,
+        questions: quizData.questions,
+      }),
+    });
+
+    if (saveResponse.ok) {
+      const data = await saveResponse.json();
+      setQuizId(data.quiz._id);
+    }
+
+    setStep('quiz');
+  } catch (error) {
+    console.error('Error generating quiz:', error);
+    alert('Failed to generate quiz. Please try again.');
+    setStep('form');
+  }
+};
 
   const handleAnswerSelect = (answerIndex: number) => {
     const newAnswers = [...selectedAnswers];

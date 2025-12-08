@@ -14,69 +14,37 @@ export default function RoadmapGenerator() {
   const [roadmap, setRoadmap] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
-  const handleSubmit = () => {
-    if (!formData.topic) return;
-    setStep('generating');
+ const handleSubmit = async () => {
+  if (!formData.topic) return;
+  setStep('generating');
 
-    // Simulate API call - we'll add real AI later
-    setTimeout(() => {
-      const mockRoadmap = {
-        title: `${formData.topic} Learning Path`,
+  try {
+    // Call AI API to generate roadmap
+    const response = await fetch('/api/generate/roadmap', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         topic: formData.topic,
         difficulty: formData.difficulty,
-        duration: parseInt(formData.duration),
-        phases: [
-          {
-            week: 1,
-            title: 'Fundamentals & Basics',
-            topics: [
-              'Introduction to ' + formData.topic,
-              'Core concepts and terminology',
-              'Setting up your environment',
-              'First practical exercise',
-            ],
-            completed: false,
-          },
-          {
-            week: 2,
-            title: 'Building Foundation',
-            topics: [
-              'Deep dive into key principles',
-              'Hands-on practice projects',
-              'Common patterns and best practices',
-              'Quiz: Test your understanding',
-            ],
-            completed: false,
-          },
-          {
-            week: 3,
-            title: 'Intermediate Concepts',
-            topics: [
-              'Advanced techniques',
-              'Real-world applications',
-              'Problem-solving strategies',
-              'Project: Build something practical',
-            ],
-            completed: false,
-          },
-          {
-            week: 4,
-            title: 'Mastery & Application',
-            topics: [
-              'Complex scenarios',
-              'Integration with other technologies',
-              'Final project',
-              'Assessment and next steps',
-            ],
-            completed: false,
-          },
-        ],
-      };
-      setRoadmap(mockRoadmap);
-      setStep('result');
-    }, 3000);
-  };
+        duration: formData.duration,
+      }),
+    });
 
+    if (!response.ok) {
+      throw new Error('Failed to generate roadmap');
+    }
+
+    const data = await response.json();
+    setRoadmap(data.roadmap);
+    setStep('result');
+  } catch (error) {
+    console.error('Error generating roadmap:', error);
+    alert('Failed to generate roadmap. Please try again.');
+    setStep('form');
+  }
+};
   const handleSaveRoadmap = async () => {
     setSaving(true);
     try {
