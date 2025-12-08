@@ -50,10 +50,12 @@ export default function LandingPage() {
           </p>
           
           <div className="flex gap-4 justify-center flex-wrap">
-            <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition flex items-center gap-2">
-              Start Learning Free
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              <Link href="/sign-up">
+              <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition flex items-center gap-2 cursor-pointer">
+                Start Learning Free
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </Link>
             <button className="px-8 py-4 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-lg hover:bg-slate-700 transition">
               Watch Demo
             </button>
@@ -212,10 +214,12 @@ export default function LandingPage() {
           <p className="text-xl text-slate-400 mb-10">
             Join thousands of learners who are already forging their path to success with AI-powered education.
           </p>
-          <button className="px-10 py-5 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition inline-flex items-center gap-2">
-            Get Started for Free
-            <ArrowRight className="w-5 h-5" />
-          </button>
+              <Link href="/sign-up">
+            <button className="px-10 py-5 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition inline-flex items-center gap-2 cursor-pointer">
+              Get Started for Free
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </Link>
         </div>
       </section>
 
