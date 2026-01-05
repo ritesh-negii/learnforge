@@ -1,11 +1,12 @@
 import React from 'react';
-import { Brain, Map, BookOpen, Sparkles, ArrowRight, Check } from 'lucide-react';
+import { Brain, Map, BookOpen, Sparkles, ArrowRight, Check, Code2, Database, Zap, Shield } from 'lucide-react';
 import Link from 'next/link';
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       {/* Navigation */}
-     <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm fixed w-full z-50">
+      <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur-sm fixed w-full z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-gradient-to-br from-orange-500 to-red-600 p-2 rounded-lg">
@@ -50,29 +51,12 @@ export default function LandingPage() {
           </p>
           
           <div className="flex gap-4 justify-center flex-wrap">
-              <Link href="/sign-up">
+            <Link href="/sign-up">
               <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition flex items-center gap-2 cursor-pointer">
                 Start Learning Free
                 <ArrowRight className="w-5 h-5" />
               </button>
             </Link>
-            <button className="px-8 py-4 bg-slate-800 border border-slate-700 rounded-xl font-semibold text-lg hover:bg-slate-700 transition">
-              Watch Demo
-            </button>
-          </div>
-
-          {/* Hero Image Placeholder */}
-          <div className="mt-16 relative">
-            <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl border border-slate-700 p-8 shadow-2xl">
-              <div className="aspect-video bg-gradient-to-br from-orange-500/10 to-red-600/10 rounded-lg border border-slate-700 flex items-center justify-center">
-                <div className="text-center">
-                  <Brain className="w-16 h-16 text-orange-400 mx-auto mb-4" />
-                  <p className="text-slate-400">Dashboard Preview</p>
-                </div>
-              </div>
-            </div>
-            {/* Glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 opacity-20 blur-3xl -z-10"></div>
           </div>
         </div>
       </section>
@@ -171,40 +155,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-12">
-            <div className="grid md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent mb-2">
-                  10K+
-                </div>
-                <div className="text-slate-400">Active Learners</div>
-              </div>
-              <div>
-                <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent mb-2">
-                  50K+
-                </div>
-                <div className="text-slate-400">Roadmaps Created</div>
-              </div>
-              <div>
-                <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent mb-2">
-                  100K+
-                </div>
-                <div className="text-slate-400">Quizzes Taken</div>
-              </div>
-              <div>
-                <div className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent mb-2">
-                  95%
-                </div>
-                <div className="text-slate-400">Success Rate</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
@@ -212,9 +162,9 @@ export default function LandingPage() {
             Ready to Transform Your Learning?
           </h2>
           <p className="text-xl text-slate-400 mb-10">
-            Join thousands of learners who are already forging their path to success with AI-powered education.
+            Experience personalized, AI-powered education designed to help you master any subject efficiently.
           </p>
-              <Link href="/sign-up">
+          <Link href="/sign-up">
             <button className="px-10 py-5 bg-gradient-to-r from-orange-500 to-red-600 rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-orange-500/50 transition inline-flex items-center gap-2 cursor-pointer">
               Get Started for Free
               <ArrowRight className="w-5 h-5" />
@@ -225,24 +175,16 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800 py-12 px-6 bg-slate-900/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <div className="bg-gradient-to-br from-orange-500 to-red-600 p-2 rounded-lg">
-                <Brain className="w-5 h-5" />
-              </div>
-              <span className="text-xl font-bold">LearnForge</span>
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="bg-gradient-to-br from-orange-500 to-red-600 p-2 rounded-lg">
+              <Brain className="w-5 h-5" />
             </div>
-            <div className="flex gap-8 text-slate-400">
-              <a href="#" className="hover:text-white transition">About</a>
-              <a href="#" className="hover:text-white transition">Features</a>
-              <a href="#" className="hover:text-white transition">Pricing</a>
-              <a href="#" className="hover:text-white transition">Contact</a>
-            </div>
-            <div className="text-slate-400 text-sm">
-              © 2025 LearnForge. All rights reserved.
-            </div>
+            <span className="text-xl font-bold">LearnForge</span>
           </div>
+          <p className="text-slate-400 text-sm">
+            © 2025 LearnForge. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>

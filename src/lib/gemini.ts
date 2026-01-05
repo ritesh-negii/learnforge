@@ -1,11 +1,41 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+
+
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
+export async function safeGenerate(prompt: string, retries = 5): Promise<any | null> {
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const result = await model.generateContent(prompt);
+    return result;
+  } catch (error: any) {
+    console.error("Gemini API Error:", error);
+
+    // Retry if overloaded (503)
+    if (retries > 0 && error?.status === 503) {
+      const delay = (6 - retries) * 1000; // 1s,2s,3s,4s,5s
+      console.log(`Retrying in ${delay}ms...`);
+      await new Promise(res => setTimeout(res, delay));
+      return safeGenerate(prompt, retries - 1);
+    }
+
+    // Fallback on persistent overload
+    if (error?.status === 503) {
+      console.log("Falling back to gemini-pro model...");
+      const fallback = genAI.getGenerativeModel({ model: "gemini-pro" });
+      return fallback.generateContent(prompt);
+    }
+
+    return null;
+  }
+}
+
+
+// --------------------------------------------------------
+// 🚀 Generate Roadmap
+// --------------------------------------------------------
 export async function generateRoadmap(topic: string, difficulty: string, weeks: number) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-
   const prompt = `Create a detailed ${weeks}-week learning roadmap for "${topic}" at ${difficulty} level.
 
 Return a JSON object with this exact structure (no markdown, just raw JSON):
@@ -27,18 +57,19 @@ Requirements:
 - For ${difficulty} level learners
 - Be specific and practical`;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  
-  // Extract JSON from response (remove markdown if present)
+const result = await safeGenerate(prompt);
+if (!result) throw new Error("Gemini did not return a response");
+
+
+  if (!result) throw new Error("Gemini did not return a response");
+
+  const text = (await result.response).text();
+
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    throw new Error('Failed to generate valid roadmap');
-  }
-  
+  if (!jsonMatch) throw new Error("Failed to parse roadmap JSON");
+
   const roadmapData = JSON.parse(jsonMatch[0]);
-  
+
   return {
     title: roadmapData.title,
     topic,
@@ -51,10 +82,10 @@ Requirements:
   };
 }
 
+// --------------------------------------------------------
+// 🚀 Generate Quiz
+// --------------------------------------------------------
 export async function generateQuiz(topic: string, difficulty: string, numberOfQuestions: number) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
-
-
   const prompt = `Generate ${numberOfQuestions} multiple-choice quiz questions about "${topic}" at ${difficulty} level.
 
 Return a JSON array with this exact structure (no markdown, just raw JSON):
@@ -70,21 +101,20 @@ Return a JSON array with this exact structure (no markdown, just raw JSON):
 Requirements:
 - Create exactly ${numberOfQuestions} questions
 - Each question must have exactly 4 options
-- correctAnswer is the index (0-3) of the correct option
+- correctAnswer is the index (0-3)
 - Questions should be clear and unambiguous
-- For ${difficulty} level
 - Include helpful explanations`;
 
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  const text = response.text();
-  
-  // Extract JSON from response
+const result = await safeGenerate(prompt);
+if (!result) throw new Error("Gemini did not return a response");
+
+
+  if (!result) throw new Error("Gemini did not return a response");
+
+  const text = (await result.response).text();
+
   const jsonMatch = text.match(/\[[\s\S]*\]/);
-  if (!jsonMatch) {
-    throw new Error('Failed to generate valid quiz');
-  }
-  
-  const questions = JSON.parse(jsonMatch[0]);
-  return questions;
+  if (!jsonMatch) throw new Error("Failed to parse quiz JSON");
+
+  return JSON.parse(jsonMatch[0]);
 }

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { UserButton } from '@clerk/nextjs';
-import { Brain, Map, BookOpen, Clock, Calendar } from 'lucide-react';
-import Link from 'next/link';
+import { useEffect, useState } from "react";
+import { UserButton } from "@clerk/nextjs";
+import { Brain, Map, BookOpen, Clock, Calendar } from "lucide-react";
+import Link from "next/link";
 
 interface Roadmap {
   _id: string;
@@ -35,20 +35,20 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       // Fetch roadmaps
-      const roadmapsRes = await fetch('/api/roadmap');
+      const roadmapsRes = await fetch("/api/roadmap");
       if (roadmapsRes.ok) {
         const data = await roadmapsRes.json();
         setRoadmaps(data.roadmaps);
       }
 
       // Fetch quiz results
-      const quizResultsRes = await fetch('/api/quiz/result');
+      const quizResultsRes = await fetch("/api/quiz/result");
       if (quizResultsRes.ok) {
         const data = await quizResultsRes.json();
         setQuizResults(data.results);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -56,10 +56,10 @@ export default function Dashboard() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     });
   };
 
@@ -87,9 +87,12 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto px-6 py-12">
         {/* Generate Content Section */}
         <section className="mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Generate Content</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Generate Content
+          </h1>
           <p className="text-gray-600 text-lg mb-8">
-            Create personalized study roadmaps and quizzes to enhance your learning.
+            Create personalized study roadmaps and quizzes to enhance your
+            learning.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -127,7 +130,9 @@ export default function Dashboard() {
 
         {/* Your Roadmaps Section */}
         <section className="mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Your Roadmaps</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Your Roadmaps
+          </h2>
           {loading ? (
             <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
               <p className="text-gray-500">Loading...</p>
@@ -175,9 +180,11 @@ export default function Dashboard() {
                       <Calendar className="w-4 h-4" />
                       Created {formatDate(roadmap.createdAt)}
                     </span>
-                    <button className="text-orange-600 hover:text-orange-700 font-semibold">
-                      Continue →
-                    </button>
+                    <Link href={`/roadmap/${roadmap._id}`}>
+                      <button className="text-orange-600 hover:text-orange-700 font-semibold">
+                        Continue →
+                      </button>
+                    </Link>
                   </div>
                 </div>
               ))}
@@ -194,7 +201,9 @@ export default function Dashboard() {
 
         {/* Your Quiz Results Section */}
         <section>
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Recent Quiz Results</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">
+            Recent Quiz Results
+          </h2>
           {loading ? (
             <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
               <p className="text-gray-500">Loading...</p>
